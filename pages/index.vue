@@ -1,25 +1,35 @@
 <template>
   <div class="container">
-    <div>
-      <logo />
-      <h1 class="title">
+    <header>
+      <h1 class="logo">
         utkucum
       </h1>
-      <h2 class="subtitle">
-        My top-notch Nuxt.js project
-      </h2>
-      <div class="links">
+      <div class="navbar">
         <nuxt-link to="/">
           Ana Sayfa
         </nuxt-link>
         <nuxt-link
           to="blog"
-          class="button--grey"
         >
           Blog
         </nuxt-link>
+        <nuxt-link
+          to="work"
+        >
+          Work
+        </nuxt-link>
       </div>
-    </div>
+    </header>
+    <main>
+      
+      <div id="_youtube-iframe-wrapper">
+		    <div id="_youtube-iframe" data-youtubeurl="0vrdgDdPApQ">
+        </div>
+      </div>
+    </main>
+    <footer>
+      footer
+    </footer>
   </div>
 </template>
 
@@ -35,19 +45,51 @@ export default {
   },
   components: {
     Logo
+  },
+  mounted() {
+    console.log("mounted oldu mu");
+    
+  var tag = document.createElement('script');
+	tag.src = "https://www.youtube.com/iframe_api";
+	var firstScriptTag = document.getElementsByTagName('script')[0];
+	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+	// 3. This function creates an <iframe> (and YouTube player)
+	//    after the API code downloads.
+	var youtubePlayer;
+	var _youtube_id = document.getElementById('_youtube-iframe');
+	
+	function onYouTubeIframeAPIReady() {				
+		youtubePlayer = new YT.Player('_youtube-iframe', {
+			videoId: _youtube_id.dataset.youtubeurl,
+			playerVars: { // https://developers.google.com/youtube/player_parameters?playerVersion=HTML5
+				cc_load_policy: 0, // closed caption
+				controls: 0,
+				disablekb: 0, //disable keyboard
+				iv_load_policy: 3, // annotations
+				playsinline: 1, // play inline on iOS
+				rel: 0, // related videos
+				showinfo: 0, // title
+				modestbranding: 3 // youtube logo
+			},
+			events: {
+				'onReady': onYoutubePlayerReady,
+				'onStateChange': onYoutubePlayerStateChange
+			}
+		});
+	}
+	
+	function onYoutubePlayerReady(event) {
+		event.target.mute();
+		event.target.playVideo();				
+	}
+
+
   }
 }
 </script>
 
 <style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
 
 .title {
   font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
@@ -58,16 +100,60 @@ export default {
   color: #35495e;
   letter-spacing: 1px;
 }
+.container{
+  display: grid;
+  grid-template-areas:
+    "header"
+    "content"
+    "footer";
 
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
+  grid-template-columns: auto;
+  grid-template-rows: auto 1fr auto;
+  grid-gap: 10px;
+  height: 100vh;
+  padding: 10px 20px;
+  background-color: #fff000;
 }
 
-.links {
-  padding-top: 15px;
+
+header{
+  grid-area: header;
+  background-color: orangered;
+  display:grid;
+  grid-template-columns: 1fr auto auto;
+  justify-items: start;
+}
+.navbar{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-items: end;
+  align-items: center;
+}
+main{
+  grid-area: content;
+  background-color: orange;
+}
+
+footer{
+  grid-area: footer;
+  background-color: red;
+}
+
+
+#youtube-iframe-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: absolute;
+  height: 100%;
+  background-color: navy;
+}
+#youtube-iframe {
+  position: absolute;
+  pointer-events: none;
+  margin: 0 auto;
+  height: 300vh; 
+  width: 120vw;	
 }
 </style>
