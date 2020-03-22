@@ -38,6 +38,7 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    { src:'~/plugins/vue-youtube-embed', mode: 'client' }
   ],
   /*
   ** Nuxt.js dev-modules
@@ -74,7 +75,8 @@ export default {
     ** You can extend webpack config here
     */
     extend (config, ctx) {
-    }
+    },
+    transpile: ['vue-youtube-embed']
   }
 }
 function getDynamicPaths(urlFilepathTable) {

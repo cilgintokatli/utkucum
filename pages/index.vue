@@ -21,9 +21,10 @@
       </div>
     </header>
     <main>
-      
-      <div id="_youtube-iframe-wrapper">
-		    <div id="_youtube-iframe" data-youtubeurl="0vrdgDdPApQ">
+      <div >
+        <div class="_pattern-overlay"></div>
+        <div id="youtube-iframe-wrapper">
+          <youtube video-id="0vrdgDdPApQ" :player-vars="player1" :mute="mute" @ended="ended"></youtube>
         </div>
       </div>
     </main>
@@ -37,7 +38,32 @@
 import Logo from '~/components/Logo.vue'
 
 
+
 export default {
+  data(){
+    return{
+      mute: false,
+      player1: {
+        autoplay: 1,
+        cc_load_policy: 0, // closed caption
+				controls: 0,
+				disablekb: 0, //disable keyboard
+				iv_load_policy: 3, // annotations
+				playsinline: 1, // play inline on iOS
+				rel: 0, // related videos
+				showinfo: 0, // title
+        modestbranding: 1, // youtube logo
+        loop:1,
+        start: 0
+      },
+    }
+  },
+  methods:{
+    ended () {
+      console.log('Ended');
+      this.$set(this.player1, 'start', 10)
+    }
+  },
   head() {
     return {
       script: [{ src: 'https://identity.netlify.com/v1/netlify-identity-widget.js' }],
@@ -48,44 +74,13 @@ export default {
   },
   mounted() {
     console.log("mounted oldu mu");
-    
-  var tag = document.createElement('script');
-	tag.src = "https://www.youtube.com/iframe_api";
-	var firstScriptTag = document.getElementsByTagName('script')[0];
-	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-	// 3. This function creates an <iframe> (and YouTube player)
-	//    after the API code downloads.
-	var youtubePlayer;
-	var _youtube_id = document.getElementById('_youtube-iframe');
-	
-	function onYouTubeIframeAPIReady() {				
-		youtubePlayer = new YT.Player('_youtube-iframe', {
-			videoId: _youtube_id.dataset.youtubeurl,
-			playerVars: { // https://developers.google.com/youtube/player_parameters?playerVersion=HTML5
-				cc_load_policy: 0, // closed caption
-				controls: 0,
-				disablekb: 0, //disable keyboard
-				iv_load_policy: 3, // annotations
-				playsinline: 1, // play inline on iOS
-				rel: 0, // related videos
-				showinfo: 0, // title
-				modestbranding: 3 // youtube logo
-			},
-			events: {
-				'onReady': onYoutubePlayerReady,
-				'onStateChange': onYoutubePlayerStateChange
-			}
-		});
-	}
-	
-	function onYoutubePlayerReady(event) {
-		event.target.mute();
-		event.target.playVideo();				
-	}
+       // Load the IFrame Player API code asynchronously.
+  
 
+  },
 
-  }
+  
 }
 </script>
 
@@ -139,6 +134,32 @@ footer{
   background-color: red;
 }
 
+.fullscreen-video-background {
+  background: #000;
+  position: relative;
+  width: 100%;
+  z-index: -99;
+	overflow: hidden;
+  height: 100vh;
+}
+._pattern-overlay { 
+		position: absolute;
+		top: 0;
+		width: 100%;
+		opacity: 0.3;
+		bottom: 0;
+		background-image: url(https://cdnjs.cloudflare.com/ajax/libs/vegas/2.3.1/overlays/03.png);
+		z-index: 2;
+}
+
+#_buffering-background {
+		position: absolute;
+		width: 100%;
+		top: 0;
+		bottom: 0;
+		background: #222;
+		z-index: 1;
+}
 
 #youtube-iframe-wrapper {
   display: flex;
@@ -149,11 +170,15 @@ footer{
   height: 100%;
   background-color: navy;
 }
-#youtube-iframe {
-  position: absolute;
-  pointer-events: none;
-  margin: 0 auto;
-  height: 300vh; 
-  width: 120vw;	
+#youtube-player-1{
+position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: 0;
+    transform: translateX(-50%) translateY(-50%);
 }
 </style>
